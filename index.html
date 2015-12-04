@@ -155,18 +155,18 @@ function normalizeSKUs(skus, <u>cb</u>) {
             <h2>What’s wrong?</h2>
 
             <h4 class="breathe">Code doesn’t flow well</h4>
-            <p>
+            <p class="fragment">
               Mind / Code mapping is terrible.<br/>
               <small>(mostly because no returned value / entity)</small>
             </p>
-            <p>Error management is a friggin’ mess.</p>
+            <p class="fragment">Error management is a friggin’ mess.</p>
 
-            <h4>Untrustworthy</h4>
-            <p>Will it even <strong>run</strong>?</p>
-            <p>Will it run <strong>either</strong> error or success callbacks, not <strong>both</strong>?</p>
-            <p>Will it run only <strong>once</strong>?</p>
+            <h4 class="fragment">Untrustworthy</h4>
+            <p class="fragment">Will it even <strong>run</strong>?</p>
+            <p class="fragment">Will it run <strong>either</strong> error or success callbacks, not <strong>both</strong>?</p>
+            <p class="fragment">Will it run only <strong>once</strong>?</p>
 
-            <h4>No composability</h4>
+            <h4 class="fragment">No composability</h4>
 
             <aside class="notes">
               <p>16:30 -> 15:00</p>
@@ -247,14 +247,14 @@ var computationDone = false;
             <h2>Pros</h2>
 
             <p>No <strong>extra concepts</strong></p>
-            <p>No <strong>abstraction penalty</strong> (performance or code cruft)</p>
-            <p><strong>Wide</strong> range of use cases</p>
-            <p><strong>Well-tested</strong>, well-maintained (h/t @caolan)</p>
+            <p class="fragment">No <strong>abstraction penalty</strong> (performance or code cruft)</p>
+            <p class="fragment"><strong>Wide</strong> range of use cases</p>
+            <p class="fragment"><strong>Well-tested</strong>, well-maintained (h/t @caolan)</p>
 
-            <h4>Solves…</h4>
+            <h4 class="fragment">Solves…</h4>
 
-            <p>…some of the <strong>code flow and composability issues</strong> we’ve seen.</p>
-            <p>But not all.  And none of the other issues.</p>
+            <p class="fragment">…some of the <strong>code flow and composability issues</strong> we’ve seen.</p>
+            <p class="fragment">But not all.  And none of the other issues.</p>
 
             <aside class="notes">
               <p>13:45 -> 13:00</p>
@@ -278,11 +278,11 @@ var computationDone = false;
 
             <p>Been there a long time, under various forms and names.</p>
             <p>Came into JS in <strong>2007</strong> <a target="_blank" href="https://dojotoolkit.org/reference-guide/1.10/dojo/Deferred.html">through Dōjō</a>.</p>
-            <p>Promises/A proposed in CommonJS in 2009 (Kris Zyp)</p>
-            <p>Promises/A+ in <strong>2012</strong> (Brian Cavalier, Domenic Denicola et at.)</p>
+            <p class="fragment">Promises/A proposed in CommonJS in 2009 (Kris Zyp)</p>
+            <p class="fragment">Promises/A+ in <strong>2012</strong> (Brian Cavalier, Domenic Denicola et at.)</p>
             <br/>
-            <p>Recent web APIs use promises (e.g. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker">ServiceWorker</a>…)</p>
-            <p>Tons of libs (Q, rsvp, bluebird…), polyfills… Now <strong>ES6/2015 native</strong>.</p>
+            <p class="fragment">Recent web APIs use promises (e.g. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker">ServiceWorker</a>…)</p>
+            <p class="fragment">Tons of libs (Q, rsvp, bluebird…), polyfills… Now <strong>ES6/2015 native</strong>.</p>
 
             <aside class="notes">
               <p>13:00 -> 12:15</p>
@@ -343,12 +343,12 @@ getJSON('story.json').then(function(story) {
             <aside class="notes">11:45 -> 11:00</aside>
           </section>
 
-          <section id="promises-links">
+          <section id="promises-links" class="breathing">
             <h2>A couple great resources</h2>
 
             <p><a target="_blank" href="">Awesome article</a> by Jake Archibald.  Really drives the point home.</p>
-            <p><a target="_blank" href="https://www.promisejs.org/">promisejs.org</a>, a comprehensive grounding by Forbes Lindesay.</p>
-            <p><a target="_blank" href="http://bevacqua.github.io/promisees/">Promisees</a>, an interactive playground by Nicolás Bevacqua.</p>
+            <p class="fragment"><a target="_blank" href="https://www.promisejs.org/">promisejs.org</a>, a comprehensive grounding by Forbes Lindesay.</p>
+            <p class="fragment"><a target="_blank" href="http://bevacqua.github.io/promisees/">Promisees</a>, an interactive playground by Nicolás Bevacqua.</p>
             <aside class="notes">11:00 -> 10:50</aside>
           </section>
 
@@ -357,11 +357,13 @@ getJSON('story.json').then(function(story) {
 
             <h4 class="breathe">Awesome:</h4>
             <p><strong>Trustworthy</strong>: only one callback, only once, guaranteed.  Plus, exceptions!</p>
-            <p><strong>Composable</strong>: chainable, with injection and casting.</p>
-            <h4>Not so awesome:</h4>
-            <p>New <strong>abstractions</strong></p>
-            <p>Slight performance penalty (improves, esp. with natives)</p>
-            <p>Code flow remains <strong>non-intuitive</strong> / very different from sync code.</p>
+            <p class="fragment"><strong>Composable</strong>: chainable, with injection and casting.</p>
+            <div class="fragment">
+              <h4>Not so awesome:</h4>
+              <p>New <strong>abstractions</strong></p>
+            </div>
+            <p class="fragment">Slight performance penalty (improves, esp. with natives)</p>
+            <p class="fragment">Code flow remains <strong>non-intuitive</strong> / very different from sync code.</p>
             <aside class="notes">
               <p>10:50 -> 10:00</p>
               <ol>
@@ -379,12 +381,12 @@ getJSON('story.json').then(function(story) {
             <aside class="notes">10:00 -> 06:45</aside>
           </section>
 
-          <section id="gens-laziness">
+          <section id="gens-laziness" class="breathing">
             <h2>Sheer Laziness</h2>
 
             <p>Generators let us do <strong>lazy eval</strong> in JS. Which is <strong>beyond awesome!</strong></p>
-            <p>I CAN HAZ <strong>coroutines</strong>: ad hoc suspending of the current code path (incl. stack), to be resumed later.  At any points in our code.</p>
-            <p>Builds upon a more general concept: <strong>iterators</strong> (and <strong>iterables</strong>)</p>
+            <p class="fragment">I CAN HAZ <strong>coroutines</strong>: ad hoc suspending of the current code path (incl. stack), to be resumed later.  At any points in our code.</p>
+            <p class="fragment">Builds upon a more general concept: <strong>iterators</strong> (and <strong>iterables</strong>)</p>
             <aside class="notes">
               <p>10:00 -> 09:00</p>
               <ol>
@@ -404,19 +406,21 @@ getJSON('story.json').then(function(story) {
 <u>function*</u> myGenFunction() { … }
             </code></pre>
 
-            <h4>I yield! I yield!</h4>
+            <div class="fragment">
+              <h4>I yield! I yield!</h4>
 
-            <p>Suspend current function until caller gives control back. <strong>Coroutines!</strong></p>
+              <p>Suspend current function until caller gives control back. <strong>Coroutines!</strong></p>
 
-            <pre><code class="javascript" data-trim data-noescape>
-function* myGenFunction() {
-  // …
-  <u>yield</u> someValue;
-  // …
-}
-            </code></pre>
+              <pre><code class="javascript" data-trim data-noescape>
+  function* myGenFunction() {
+    // …
+    <u>yield</u> someValue;
+    // …
+  }
+              </code></pre>
+            </div>
 
-            <p>A <strong>conversation</strong>: <code>yield</code> can <strong>return a value</strong> the caller sends back, and the generator API lets the caller control the callee (<code>returns</code>, <code>throws</code>).</p>
+            <p class="fragment">A <strong>conversation</strong>: <code>yield</code> can <strong>return a value</strong> the caller sends back, and the generator API lets the caller control the callee (<code>returns</code>, <code>throws</code>).</p>
 
             <aside class="notes">
               <p>09:00 -> 08:05</p>
@@ -479,8 +483,8 @@ function* getComposedGen() {
             <p>Coroutines ≠ Async</p>
             <p>The code remains <strong>synchronous</strong>, even if we jump around stack frames.</p>
             <br>
-            <p>…So, generators don’t really solve async issues, do they?</p>
-            <p><strong>Not by themselves</strong>, that’s true. <strong>But…</strong></p>
+            <p class="fragment">…So, generators don’t really solve async issues, do they?</p>
+            <p class="fragment"><strong>Not by themselves</strong>, that’s true. <strong>But…</strong></p>
             <aside class="notes">07:05 -> 06:45</aside>
           </section>
 				</section> <!-- #generators -->
@@ -492,16 +496,16 @@ function* getComposedGen() {
             <aside class="notes">06:45 -> 04:30</aside>
           </section>
 
-          <section id="promises-with-gens-ground-work">
+          <section id="promises-with-gens-ground-work" class="breathing">
             <h2>Underpinnings</h2>
 
             <p>Forbes famously called this “<a target="_blank" href="http://2013.jsconf.eu/speakers/forbes-lindesay-promises-and-generators-control-flow-utopia.html">Control-Flow Utopia</a>” at JSConf.EU 2013.</p>
 
-            <p>The generator API is a <strong>conversation</strong>, remember?  The caller can ask the callee to not just proceed (with an optional <strong>value sent back into it</strong>), but <strong>return</strong> or even <strong>throw</strong> when it resumes.</p>
+            <p class="fragment">The generator API is a <strong>conversation</strong>, remember?  The caller can ask the callee to not just proceed (with an optional <strong>value sent back into it</strong>), but <strong>return</strong> or even <strong>throw</strong> when it resumes.</p>
 
-            <p>So it has to be possible to wire a <strong>runner function</strong> for generators that lets their code look <strong>very much like sync code</strong>.</p>
+            <p class="fragment">So it has to be possible to wire a <strong>runner function</strong> for generators that lets their code look <strong>very much like sync code</strong>.</p>
 
-            <p>This was first demonstrated in 2011 by Dave Herman, in <a target="_blank" href="http://taskjs.org/">Task.js</a>.</p>
+            <p class="fragment">This was first demonstrated in 2011 by Dave Herman, in <a target="_blank" href="http://taskjs.org/">Task.js</a>.</p>
 
             <aside class="notes">
               <p>06:45 -> 06:10</p>
@@ -514,7 +518,7 @@ function* getComposedGen() {
           </section>
 
           <section id="promises-with-gens-example-user-side">
-            <h2>Classic example (user side)</h2>
+            <h2>Sweet examples (user side)</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
 var <u>loadStory = runSyncLookingAsync(function*</u>() {
@@ -550,7 +554,7 @@ login('user', 'secret', session);
           </section>
 
           <section id="promises-with-gens-example-runner-side">
-            <h2>Classic example (runner side)</h2>
+            <h2>Example runner implementation</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
 function runSyncLookingAsync(genMakingFx){
@@ -584,16 +588,18 @@ function runSyncLookingAsync(genMakingFx){
 
             <h4 class="breathe">Awesome:</h4>
             <p>Code <strong>is indeed async</strong> (non-blocking).</p>
-            <p>Code <strong>looks very much sync</strong> (easier to reason about).</p>
-            <p>You can have your cake and eat it too.</p>
+            <p class="fragment">Code <strong>looks very much sync</strong> (easier to reason about).</p>
+            <p class="fragment">You can have your cake and eat it too.</p>
 
-            <h4>Not so awesome:</h4>
-            <p>A bit hackish.</p>
-            <p>Added weight (syntax + performance) due to generators + promises.</p>
-            <p>You could argue these building blocks were not <em>designed</em> for this, and are therefore not <em>optimized</em> for this use-case.</p>
+            <div class="fragment">
+              <h4>Not so awesome:</h4>
+              <p>A bit hackish.</p>
+            </div>
+            <p class="fragment">Added weight (syntax + performance) due to generators + promises.</p>
+            <p class="fragment">You could argue these building blocks were not <em>designed</em> for this, and are therefore not <em>optimized</em> for this use-case.</p>
 
             <br>
-            <p>Which is why…</p>
+            <p class="fragment">Which is why…</p>
 
             <aside class="notes">
               <p>05:00 -> 04:30</p>
@@ -616,8 +622,8 @@ function runSyncLookingAsync(genMakingFx){
             <h2>Nailed it.</h2>
 
             <p>Sort of the <strong>Holy Grail</strong> of async JS.</p>
-            <p>Basically copy-pasted from C# 5.0 / .NET 4.5 (2012).</p>
-            <p><em>(Yes, there is much goodness in MS language designs; h/t Anders)</em></p>
+            <p class="fragment">Basically copy-pasted from <strong>C# 5.0</strong> / .NET 4.5 (2012).</p>
+            <p class="fragment"><em>(Yes, there is much goodness in MS language designs; h/t Anders)</em></p>
             <aside class="notes">04:30 -> 04:20</aside>
           </section>
 
@@ -659,7 +665,7 @@ function runSyncLookingAsync(genMakingFx){
             <h2>Pro’s and Con’s</h2>
 
             <p>Hugs, Kisses and High Fives!</p>
-            <p>Like all such new features (e.g. promises and generators), it still requires optimization for performance to really get there.  But totally worth it.  And it <strong>will</strong> get there.  Just look at the trend of JS performance in general.</p>
+            <p class="fragment">Like all such new features (e.g. promises and generators), it still requires <strong>optimization for performance</strong> to really get there.  But totally worth it.  And it <strong>will</strong> get there.  Just look at the trend of JS performance in general.</p>
             <aside class="notes">03:50 -> 03:35</aside>
           </section>
 
@@ -680,15 +686,15 @@ function runSyncLookingAsync(genMakingFx){
             <aside class="notes">03:15 -> 01:15</aside>
           </section>
 
-          <section id="frp-intro">
+          <section id="frp-intro" class="breathing">
             <h2>Following the events lately?</h2>
 
             <p>So far every async op was about getting value(s) <strong>just once</strong>.</p>
-            <p>What of <strong>multiple values over time</strong>? What of <strong>streams</strong>, especially <strong>event streams</strong>?</p>
+            <p class="fragment">What of <strong>multiple values over time</strong>? What of <strong>streams</strong>, especially <strong>event streams</strong>?</p>
             <br>
-            <p>Promises won’t cut it: they’re <strong>designed</strong> to resolve <strong>only once</strong>.</p>
-            <p>This is what <strong>Reactive Programming</strong> is for.</p>
-            <p>JS lends itself especially well to Functional Reactive Programming (FRP), which is RP mixed with FP “building blocks” such as <code>map</code>, <code>reduce</code>, <code>filter</code>…</p>
+            <p class="fragment">Promises won’t cut it: they’re <strong>designed</strong> to resolve <strong>only once</strong>.</p>
+            <p class="fragment">This is what <strong>Reactive Programming</strong> is for.</p>
+            <p class="fragment">JS lends itself especially well to Functional Reactive Programming (FRP), which is RP mixed with FP “building blocks” such as <code>map</code>, <code>reduce</code>, <code>filter</code>…</p>
             <aside class="notes">
               <p>03:15 -> 02:15</p>
               <ol>
@@ -726,21 +732,23 @@ searcher<u>.subscribe</u>(renderResults); // React to final stream by rendering 
             <aside class="notes">02:15 -> 01:45</aside>
           </section>
 
-          <section id="frp-links">
+          <section id="frp-links" class="breathing">
             <h2>Check these out!</h2>
 
             <p>Especially amazing when combining multiple event sources due to interdepencies.  Keeps your code really readable / descriptive of intent.</p>
 
-            <p><a target="_blank" href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> is the JS port of the (widely ported) <a target="_blank" href="http://reactivex.io/">Reactive Extensions</a>.</p>
-            <p>Also see <a target="_blank" href="https://baconjs.github.io/">BaconJS</a>, a nice alternative.</p>
-            <p>Don’t miss Andre Staltz’s <a target="_blank" href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">outstanding intro</a> (text + videos).</p>
+            <p class="fragment"><a target="_blank" href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> is the JS port of the (widely ported) <a target="_blank" href="http://reactivex.io/">Reactive Extensions</a>.</p>
+            <p class="fragment">Also see <a target="_blank" href="https://baconjs.github.io/">BaconJS</a>, a nice alternative.</p>
+            <p class="fragment">Don’t miss Andre Staltz’s <a target="_blank" href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">outstanding intro</a> (text + videos).</p>
 
-            <h4>An image is worth a thousand words…</h4>
-            <p>
-              Wonderful stuff to grok 50+% of the numerous RP primitives more easily:
-              <a target="_blank" href="http://rxmarbles.com/">RxMarbles</a> (interactive graphics) and
-              <a target="_blank" href="http://jaredforsyth.com/rxvision/">RxVision</a>
-            </p>
+            <div class="fragment">
+              <h4>An image is worth a thousand words…</h4>
+              <p>
+                Wonderful stuff to grok 50+% of the numerous RP primitives more easily:
+                <a target="_blank" href="http://rxmarbles.com/">RxMarbles</a> (interactive graphics) and
+                <a target="_blank" href="http://jaredforsyth.com/rxvision/">RxVision</a>
+              </p>
+            </div>
             <aside class="notes">01:45 -> 01:15</aside>
           </section>
         </section> <!-- #reactive-programming -->
@@ -752,13 +760,13 @@ searcher<u>.subscribe</u>(renderResults); // React to final stream by rendering 
             <aside class="notes">01:15 -> 00:00</aside>
           </section>
 
-          <section id="debugging-reminders">
+          <section id="debugging-reminders" class="breathing">
             <h2>Quick reminders</h2>
 
-            <p>JS is <strong>an event loop</strong></p>
-            <p>JS is <strong>single-threaded</strong></p>
-            <p>Async callbacks run on a <strong>basically empty call stack</strong></p>
-            <p>Which makes debugging… interesting.</p>
+            <p class="fragment">JS is <strong>an event loop</strong></p>
+            <p class="fragment">JS is <strong>single-threaded</strong></p>
+            <p class="fragment">Async callbacks run on a <strong>basically empty call stack</strong></p>
+            <p class="fragment">Which makes debugging… interesting.</p>
             <aside class="notes">01:15 -> 01:00</aside>
           </section>
 

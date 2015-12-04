@@ -631,7 +631,8 @@ em span[lang], em strong[lang] { font-style: normal; }
   margin-top: 0.3em;
 }
 
-.reveal section p + h4, .reveal section pre + h4 { margin: 1em 0; }
+.reveal section p + h4, .reveal section pre + h4,
+.reveal section .fragment > h4:first-child { margin: 1em 0; }
 
 .reveal section .breathing { margin: 1em 0; }
 
@@ -718,4 +719,9 @@ b.right::after {
 .reveal iframe[name^="tonic-embed-"] {
   max-width: none;
   max-height: none;
+}
+
+.reveal section.breathing p,
+.reveal section.breathing li {
+  margin-top: 1em;
 }
