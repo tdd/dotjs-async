@@ -266,7 +266,6 @@ var computationDone = false;
           </section>
         </section> <!-- #async-js -->
 
-<!-- RESUME/FIXME -->
 				<section data-state="theme-color-forest-yellow">
           <section id="promises">
             <h1>Promises</h1>
@@ -277,7 +276,13 @@ var computationDone = false;
           <section id="promises-history">
             <h2>Old-timers already</h2>
 
-            <p>FIXME</p>
+            <p>Been there a long time, under various forms and names.</p>
+            <p>Came into JS in <strong>2007</strong> <a target="_blank" href="https://dojotoolkit.org/reference-guide/1.10/dojo/Deferred.html">through Dōjō</a>.</p>
+            <p>Promises/A proposed in CommonJS in 2009 (Kris Zyp)</p>
+            <p>Promises/A+ in <strong>2012</strong> (Brian Cavalier, Domenic Denicola et at.)</p>
+            <br/>
+            <p>Recent web APIs use promises (e.g. <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">fetch</a>, <a target="_blank" href="https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker">ServiceWorker</a>…)</p>
+            <p>Tons of libs (Q, rsvp, bluebird…), polyfills… Now <strong>ES6/2015 native</strong>.</p>
 
             <aside class="notes">
               <p>13:00 -> 12:15</p>
@@ -287,19 +292,35 @@ var computationDone = false;
                 <li>12:30 -> 12:15 Tons of libs</li>
               </ol>
             </aside>
-<!--
-00:20 - Been there a long time, under various forms and names; came into JS in 2007 through Dojo.  2009 = Promises/A (CommonJS) by Kris Zyp, had issues and never panned out. 2012 = Promises/A+ (Brian Cavalier, Domenic Denicola et al.)
-00:10 - Many recent web APIs use promises (e.g. fetch, ServiceWorker…)
-00:15 - Tons of libs (Q, rsvp, bluebird…) + ES6/2015 native
- -->
           </section>
 
           <section id="promises-simple-example">
-            <h2>A simple example</h2>
+            <h2>Basic examples</h2>
 
+            <p>XHR wrapping:</p>
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME
+function get(url) {
+  return <u>new Promise(function(resolve, reject)</u> {
+    var req = new XMLHttpRequest();
+    req.open('GET', url);
+    req.onload = function() {
+      if (req.status === 200) {
+        <u>resolve</u>(req.response);
+      } else {
+        <u>reject(new Error(</u>req.statusText));
+      }
+    };
+    req.onerror = function() { <u>reject(new Error(</u>"Network error")); };
+    req.send();
+  });
+}
             </code></pre>
+
+            <p>jQuery’s qXHR objects are <em>almost</em> promises:</p>
+            <pre><code class="javascript" data-trim data-noescape>
+$.getJSON('/api/v1/status').then(renderStatus, handleError);
+            </code></pre>
+
             <aside class="notes">12:15 -> 11:45</aside>
           </section>
 
@@ -307,7 +328,17 @@ var computationDone = false;
             <h2>A more involved example</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME More involved example (chained + composable + throw)
+function getJSON(url) {
+  return get(url).then(<u>JSON.parse</u>); // Sync, throwing steps are cast!
+}
+
+getJSON('story.json').then(function(story) {
+  <u>return getJSON</u>(story.chapterUrls[0]); // Chain injection!
+}).then(function(chapter1) {
+  addHtmlToPage(chapter1.html);
+})<u>.catch</u>(function() { // Exception catching!
+  addTextToPage("Chapter couldn’t display.  FML.");
+}).then(hideSpinner);
             </code></pre>
             <aside class="notes">11:45 -> 11:00</aside>
           </section>
@@ -315,20 +346,29 @@ var computationDone = false;
           <section id="promises-links">
             <h2>A couple great resources</h2>
 
-            <p>Content</p>
+            <p><a target="_blank" href="">Awesome article</a> by Jake Archibald.  Really drives the point home.</p>
+            <p><a target="_blank" href="https://www.promisejs.org/">promisejs.org</a>, a comprehensive grounding by Forbes Lindesay.</p>
+            <p><a target="_blank" href="http://bevacqua.github.io/promisees/">Promisees</a>, an interactive playground by Nicolás Bevacqua.</p>
             <aside class="notes">11:00 -> 10:50</aside>
-<!-- Link to HTML5Rocks article + http://bevacqua.github.io/promisees/ (h/t to @bevacqua) -->
           </section>
 
           <section id="promises-pros-and-cons">
             <h2>Pro’s and Con’s</h2>
 
-            <p>Content</p>
-            <aside class="notes">10:50 -> 10:00</aside>
-<!--
-  00:20 - Solves: trustworthiness + composability
-  00:30 - Con's: new abstractions, (ever so) slight perf penalty, code flow still not intuitive / sync-like
- -->
+            <h4 class="breathe">Awesome:</h4>
+            <p><strong>Trustworthy</strong>: only one callback, only once, guaranteed.  Plus, exceptions!</p>
+            <p><strong>Composable</strong>: chainable, with injection and casting.</p>
+            <h4>Not so awesome:</h4>
+            <p>New <strong>abstractions</strong></p>
+            <p>Slight performance penalty (improves, esp. with natives)</p>
+            <p>Code flow remains <strong>non-intuitive</strong> / very different from sync code.</p>
+            <aside class="notes">
+              <p>10:50 -> 10:00</p>
+              <ol>
+                <li>10:50 -> 10:30 : pros</li>
+                <li>10:30 -> 10:00 : cons</li>
+              </ol>
+            </aside>
           </section>
         </section> <!-- #promises -->
 
@@ -342,7 +382,9 @@ var computationDone = false;
           <section id="gens-laziness">
             <h2>Sheer Laziness</h2>
 
-            <p>Content</p>
+            <p>Generators let us do <strong>lazy eval</strong> in JS. Which is <strong>beyond awesome!</strong></p>
+            <p>I CAN HAZ <strong>coroutines</strong>: ad hoc suspending of the current code path (incl. stack), to be resumed later.  At any points in our code.</p>
+            <p>Builds upon a more general concept: <strong>iterators</strong> (and <strong>iterables</strong>)</p>
             <aside class="notes">
               <p>10:00 -> 09:00</p>
               <ol>
@@ -351,17 +393,31 @@ var computationDone = false;
                 <li>09:10 -> 09:00 Iterators</li>
               </ol>
             </aside>
-<!--
-00:30 - Basically, JS lazy evaluation
-00:20 - Lets us implement coroutines, basically: ad hoc suspending of the current code path (incl. stack), to be resumed later
-00:10 - Builds upon a more general concept: iterators
- -->
           </section>
 
           <section id="gens-functions-and-yield">
             <h2>Building blocks</h2>
 
-            <p>Content</p>
+            <h4 class="breathe">Generative functions</h4>
+            <p>Calling them <strong>spawns</strong> a generator, which combines the properties of an iterator and an iterable.  Uses <code>function*</code> (note the star).</p>
+            <pre><code class="javascript" data-trim data-noescape>
+<u>function*</u> myGenFunction() { … }
+            </code></pre>
+
+            <h4>I yield! I yield!</h4>
+
+            <p>Suspend current function until caller gives control back. <strong>Coroutines!</strong></p>
+
+            <pre><code class="javascript" data-trim data-noescape>
+function* myGenFunction() {
+  // …
+  <u>yield</u> someValue;
+  // …
+}
+            </code></pre>
+
+            <p>A <strong>conversation</strong>: <code>yield</code> can <strong>return a value</strong> the caller sends back, and the generator API lets the caller control the callee (<code>returns</code>, <code>throws</code>).</p>
+
             <aside class="notes">
               <p>09:00 -> 08:05</p>
               <ol>
@@ -369,54 +425,84 @@ var computationDone = false;
                 <li>08:40 -> 08:05 yield + API</li>
               </ol>
             </aside>
-<!--
-00:20 - Special functions: calling them spawns (generates) an iterator+iterable
-00:35 - yield keyword + generator object API = conversation
- -->
           </section>
 
           <section id="gens-example">
             <h2>Your run-of-the-mill example</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME infinite sequence examples (fibo, prime?)
+<u>function*</u> fibonacci(n) {
+  const infinite = !n &amp;&amp; n !== 0;
+  let current = 0;
+  let next = 1;
+
+  while (infinite || n--) {
+    <u>yield</u> current;
+    [current, next] = [next, current + next];
+  }
+}
+
+// Old-school:
+var fibGen = fibonacci();
+fibGen<u>.next().value</u> // => 0
+fibGen<u>.next().value</u> // => 1
+fibGen<u>.next().value</u> // => 1
+
+// Generators are iterables, so for…of work, as do spreads:
+let <u>[...first10]</u> = fibonacci(10);
+first10 // => [0, 1, 1, 2, 3, 5, 8, 13, 21, 34]
             </code></pre>
-            <p>Content</p>
+            <footer>(Credit: <a href="https://gist.github.com/jfairbank/8d36e4bde9c16dc0bac7">Jeremy Fairbank</a>)</footer>
             <aside class="notes">08:05 -> 07:35</aside>
           </section>
 
           <section id="gens-composability">
             <h2>Composability / Delegatability</h2>
 
+            <p>We can delegate to another generator / iterable by using <code>yield*</code>.</p>
+
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME infinite sequence examples (fibo, prime?)
+function* getComposedGen() {
+  <u>yield*</u> fibonacci(3);
+  <u>yield*</u> [2, 3, 5];
+  <u>yield*</u> "8C";
+}
+
+[...getComposedGen()] // => [0, 1, 1, 2, 4, 5, "8", "C"]
             </code></pre>
-            <p>Content</p>
             <aside class="notes">07:35 -> 07:05</aside>
           </section>
 
           <section id="gens-sync-but">
             <h2>But… async?</h2>
 
-            <p>Content</p>
+            <p>Coroutines ≠ Async</p>
+            <p>The code remains <strong>synchronous</strong>, even if we jump around stack frames.</p>
+            <br>
+            <p>…So, generators don’t really solve async issues, do they?</p>
+            <p><strong>Not by themselves</strong>, that’s true. <strong>But…</strong></p>
             <aside class="notes">07:05 -> 06:45</aside>
-<!--
-  00:20 - Don't bring a solution to async by themselves: gens are sync. But…
- -->
           </section>
 				</section> <!-- #generators -->
 
         <section data-state="theme-color-mint-beige">
           <section id="promises-with-generators">
             <h1>Promises + Generators</h1>
-            <h3>Or: I grokked this thing for real!</h3>
+            <h3>Or: proof that you grokked it all</h3>
             <aside class="notes">06:45 -> 04:30</aside>
           </section>
 
           <section id="promises-with-gens-ground-work">
             <h2>Underpinnings</h2>
 
-            <p>Content</p>
+            <p>Forbes famously called this “<a target="_blank" href="http://2013.jsconf.eu/speakers/forbes-lindesay-promises-and-generators-control-flow-utopia.html">Control-Flow Utopia</a>” at JSConf.EU 2013.</p>
+
+            <p>The generator API is a <strong>conversation</strong>, remember?  The caller can ask the callee to not just proceed (with an optional <strong>value sent back into it</strong>), but <strong>return</strong> or even <strong>throw</strong> when it resumes.</p>
+
+            <p>So it has to be possible to wire a <strong>runner function</strong> for generators that lets their code look <strong>very much like sync code</strong>.</p>
+
+            <p>This was first demonstrated in 2011 by Dave Herman, in <a target="_blank" href="http://taskjs.org/">Task.js</a>.</p>
+
             <aside class="notes">
               <p>06:45 -> 06:10</p>
               <ol>
@@ -425,18 +511,40 @@ var computationDone = false;
                 <li>06:20 -> 06:10 Task.js</li>
               </ol>
             </aside>
-<!--
-00:10 - What Forbes cheekily described at JSConf.EU 2013 as “Control-Flow Utopia”
-00:15 - Because gens allow a conversation of values, function returns and thrown exceptions, it's possible to wire a special generator driver function that lets us write sync-looking async code
-00:10 - First occurrence believed to be Task.js (2011) by Dave "Little Calculist" Herman.
- -->
           </section>
 
           <section id="promises-with-gens-example-user-side">
             <h2>Classic example (user side)</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME
+var <u>loadStory = runSyncLookingAsync(function*</u>() {
+  <u>try</u> {
+    let story <u>= yield</u> getJSON('story.json');
+    addHtmlToPage(story.heading);
+
+    <u>for</u> (let chapterPromise of story.chapterUrls.map(getJSON)) {
+      let chapter <u>= yield</u> chapterPromise;
+      addHtmlToPage(chapter.html);
+    }
+
+    addTextToPage("All done");
+  } <u>catch</u> (err) {
+    addTextToPage("Argh, broken: " + err.message);
+  }
+  hideSpinner();
+});
+            </code></pre>
+            <pre><code class="javascript" data-trim data-noescape>
+var <u>login = runSyncLookingAsync(function*</u>(username, password, session) {
+  var user = <u>yield</u> getUser(username);
+  var hash = <u>yield</u> crypto.hashAsync(password + user.salt);
+  if (user.hash !== hash) {
+    <u>throw</u> new Error('Incorrect password');
+  }
+  session.setUser(user);
+});
+// …
+login('user', 'secret', session);
             </code></pre>
             <aside class="notes">06:10 -> 05:40</aside>
           </section>
@@ -445,7 +553,28 @@ var computationDone = false;
             <h2>Classic example (runner side)</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME
+function runSyncLookingAsync(genMakingFx){
+  return function() {
+    var <u>generator</u> = genMakingFx(...arguments);
+
+    function handle(result) {
+      if (result<u>.done</u>) {
+        return <u>Promise.resolve(result.value)</u>;
+      }
+
+      return Promise.resolve(result.value).then(
+        function(res) { return handle(generator<u>.next(res)</u>); },
+        function(err) { return handle(generator<u>.throw(err)</u>); }
+      );
+    }
+
+    try {
+      return <u>handle(generator.next())</u>;
+    } <u>catch</u> (ex) {
+      return <u>Promise.reject(ex)</u>;
+    }
+  }
+}
             </code></pre>
             <aside class="notes">05:40 -> 05:00</aside>
           </section>
@@ -453,7 +582,19 @@ var computationDone = false;
           <section id="promises-with-gens-pros-and-cons">
             <h2>Pro’s and Con’s</h2>
 
-            <p>Content</p>
+            <h4 class="breathe">Awesome:</h4>
+            <p>Code <strong>is indeed async</strong> (non-blocking).</p>
+            <p>Code <strong>looks very much sync</strong> (easier to reason about).</p>
+            <p>You can have your cake and eat it too.</p>
+
+            <h4>Not so awesome:</h4>
+            <p>A bit hackish.</p>
+            <p>Added weight (syntax + performance) due to generators + promises.</p>
+            <p>You could argue these building blocks were not <em>designed</em> for this, and are therefore not <em>optimized</em> for this use-case.</p>
+
+            <br>
+            <p>Which is why…</p>
+
             <aside class="notes">
               <p>05:00 -> 04:30</p>
               <ol>
@@ -461,16 +602,12 @@ var computationDone = false;
                 <li>04:45 -> 04:30 Con’s</li>
               </ol>
             </aside>
-<!--
-00:15 - Pro's: have your cake and eat it too
-00:15 - Cons: a bit hackish; added weight (syntax/perf) due to gens + promises on top of native semantics.
- -->
           </section>
         </section> <!-- #promises-with-generators -->
 
         <section data-state="theme-color-blue-yellow">
           <section id="async-await">
-            <h1><code>async</code> / <code>await</code></h1>
+            <h1>async / await</h1>
             <h3>ZOMG.</h3>
             <aside class="notes">04:30 -> 03:15</aside>
           </section>
@@ -478,19 +615,42 @@ var computationDone = false;
           <section id="async-await-intro">
             <h2>Nailed it.</h2>
 
-            <p>Content</p>
+            <p>Sort of the <strong>Holy Grail</strong> of async JS.</p>
+            <p>Basically copy-pasted from C# 5.0 / .NET 4.5 (2012).</p>
+            <p><em>(Yes, there is much goodness in MS language designs; h/t Anders)</em></p>
             <aside class="notes">04:30 -> 04:20</aside>
-<!--
-  00:05 - Sort of the Holy Grail of JS async.
-  00:05 - Basically copy-pasted from C# 5.0 / .NET 4.5 (2012).
- -->
           </section>
 
           <section id="async-await-example">
-            <h2>Classic example</h2>
+            <h2>Pretty much find-and-replace</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME. Note how it's search-and-replace on gen+promise
+<u>async</u> function loadStory() {
+  try {
+    let story = <u>await</u> getJSON('story.json');
+    addHtmlToPage(story.heading);
+
+    for (let chapterPromise of story.chapterUrls.map(getJSON)) {
+      let chapter = <u>await</u> chapterPromise;
+      addHtmlToPage(chapter.html);
+    }
+
+    addTextToPage("All done");
+  } catch (err) {
+    addTextToPage("Argh, broken: " + err.message);
+  }
+  hideSpinner();
+});
+            </code></pre>
+            <pre><code class="javascript" data-trim data-noescape>
+<u>async</u> function login</u>(username, password, session) {
+  var user = <u>await</u> getUser(username);
+  var hash = <u>await</u> crypto.hashAsync(password + user.salt);
+  if (user.hash !== hash) {
+    throw new Error('Incorrect password');
+  }
+  session.setUser(user);
+});
             </code></pre>
             <aside class="notes">04:20 -> 03:50</aside>
           </section>
@@ -498,36 +658,37 @@ var computationDone = false;
           <section id="async-await-pros-and-cons">
             <h2>Pro’s and Con’s</h2>
 
-            <p>Content</p>
+            <p>Hugs, Kisses and High Fives!</p>
+            <p>Like all such new features (e.g. promises and generators), it still requires optimization for performance to really get there.  But totally worth it.  And it <strong>will</strong> get there.  Just look at the trend of JS performance in general.</p>
             <aside class="notes">03:50 -> 03:35</aside>
-<!--
-  00:05 - Pro's: just about everything
-  00:10 - Con's: like promises/gens: perf not optimal yet, but getting there.
- -->
           </section>
 
           <section id="async-await-status">
             <h2>DO WANT!</h2>
 
-            <p>Content</p>
+            <p>Currently at <strong>ES Stage 3</strong> (“Candidate”) stage.  <a target="_blank" href="https://tc39.github.io/ecmascript-asyncawait/">Check out the draft</a>.</p>
+            <p>Almost certainly in <strong>ES7/2016</strong>.</p>
+            <p>In the meantime, available behind flags in <strong>Edge</strong> (ha!), and in <strong>Babel</strong>/Traceur, obviously.</p>
             <aside class="notes">03:35 -> 03:15</aside>
-<!--
-  00:20 - ES Stage 3 ("Candidate") Draft.  Perhaps even Stage 4 by now?  Almost certainly in ES7/2016.  In Babel/Traceur for now, plus Edge (behind flags).  Don't see ITS yet in V8/Fx.  But hey, Babel FTW!
- -->
           </section>
         </section> <!-- #async-await -->
 
         <section data-state="theme-color-forest-yellow">
           <section id="reactive-programming">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+            <h1>Reactive Programming</h1>
+            <h3>Making sense of ongoing events</h3>
             <aside class="notes">03:15 -> 01:15</aside>
           </section>
 
           <section id="frp-intro">
             <h2>Following the events lately?</h2>
 
-            <p>Content</p>
+            <p>So far every async op was about getting value(s) <strong>just once</strong>.</p>
+            <p>What of <strong>multiple values over time</strong>? What of <strong>streams</strong>, especially <strong>event streams</strong>?</p>
+            <br>
+            <p>Promises won’t cut it: they’re <strong>designed</strong> to resolve <strong>only once</strong>.</p>
+            <p>This is what <strong>Reactive Programming</strong> is for.</p>
+            <p>JS lends itself especially well to Functional Reactive Programming (FRP), which is RP mixed with FP “building blocks” such as <code>map</code>, <code>reduce</code>, <code>filter</code>…</p>
             <aside class="notes">
               <p>03:15 -> 02:15</p>
               <ol>
@@ -537,31 +698,50 @@ var computationDone = false;
                 <li>02:45 -> 02:15 RP/FRP</li>
               </ol>
             </aside>
-<!--
-00:10 - So far every async op was for getting a value **once**
-00:15 - What of multiple values over time?  What of **streams**, especially **event streams**?
-00:05 - Promises won't cut it: by definition, they resolve **once**.
-00:30 - That's what Reactive Programming is for.  Also, FRP (RP using FP blocks such as map, reduce, filter…)
- -->
           </section>
 
           <section id="frp-example">
-            <h2>Classic example</h2>
+            <h2>A powerful RxJS example</h2>
 
             <pre><code class="javascript" data-trim data-noescape>
-// FIXME: chained event filtering / throttling / take…
+function searchWikipedia(term) {
+  return $<u>.ajaxAsObservable</u>( /* … */ )
+    <u>.select</u>(function(results) { return results.data; }); // Grab the data property
+}
+
+var input = $('#textInput');
+var keyup = input<u>.keyupAsObservable()</u>                    // Event stream!
+  <u>.select</u>(function() { return input.val(); })            // Grab the field value
+  <u>.where</u>(function(text) { return text.length > 2; })     // Only proceed when long enough
+  <u>.throttle</u>(500);                                        // Slow down, breathe…
+
+var searcher = keyup
+  <u>.select</u>(function(text) { return searchWikipedia(text); }) // Map on an XHR *result*!
+  <u>.switchLatest</u>()                                           // Only keep latest response
+  <u>.where</u>(function(data) { return data.length === 2; });     // Only keep useful results
+
+searcher<u>.subscribe</u>(renderResults); // React to final stream by rendering UI
             </code></pre>
+            <footer>(Credit: <a href="http://jsfiddle.net/mattpodwysocki/THMPk/">Matthew Podwysocki</a>)</footer>
             <aside class="notes">02:15 -> 01:45</aside>
           </section>
 
           <section id="frp-links">
             <h2>Check these out!</h2>
 
-            <p>Content</p>
+            <p>Especially amazing when combining multiple event sources due to interdepencies.  Keeps your code really readable / descriptive of intent.</p>
+
+            <p><a target="_blank" href="https://github.com/Reactive-Extensions/RxJS">RxJS</a> is the JS port of the (widely ported) <a target="_blank" href="http://reactivex.io/">Reactive Extensions</a>.</p>
+            <p>Also see <a target="_blank" href="https://baconjs.github.io/">BaconJS</a>, a nice alternative.</p>
+            <p>Don’t miss Andre Staltz’s <a target="_blank" href="https://gist.github.com/staltz/868e7e9bc2a7b8c1f754">outstanding intro</a> (text + videos).</p>
+
+            <h4>An image is worth a thousand words…</h4>
+            <p>
+              Wonderful stuff to grok 50+% of the numerous RP primitives more easily:
+              <a target="_blank" href="http://rxmarbles.com/">RxMarbles</a> (interactive graphics) and
+              <a target="_blank" href="http://jaredforsyth.com/rxvision/">RxVision</a>
+            </p>
             <aside class="notes">01:45 -> 01:15</aside>
-<!--
-00:30 - Links to RxJS (and how it's borderline universal), BaconJS, RxMarbles, RxVision and https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 (Andre Staltz)
- -->
           </section>
         </section> <!-- #reactive-programming -->
 
@@ -575,31 +755,28 @@ var computationDone = false;
           <section id="debugging-reminders">
             <h2>Quick reminders</h2>
 
-            <p>Content</p>
+            <p>JS is <strong>an event loop</strong></p>
+            <p>JS is <strong>single-threaded</strong></p>
+            <p>Async callbacks run on a <strong>basically empty call stack</strong></p>
+            <p>Which makes debugging… interesting.</p>
             <aside class="notes">01:15 -> 01:00</aside>
-<!--
- 00:15 - Reminder: event loop, single thread, empty call stack
--->
           </section>
 
           <section id="debugging-async-devtools">
             <h2>Async call stacks in DevTools</h2>
 
-            <p>Content</p>
+            <p>Chrome got <strong>async call stacks</strong> around version 35 (mid-2014).</p>
+            <p>“Traverses” async handovers: timers, XHR, promises, rAF, most observers, postMessage, FileSystem, IndexedDB…</p>
+            <p><img src="images/async-call-stack.png" alt="An example async call stack"></p>
+            <p><a href="http://www.html5rocks.com/en/tutorials/developertools/async-call-stack/" target="_blank">Check out this comprehensive article</a></p>
             <aside class="notes">01:00 -> 00:15</aside>
-<!--
-00:45 - Async call stacks in DevTools (hence v8) (lien HTML5Rocks)
- -->
           </section>
 
           <section id="debugging-v8-async-stack-traces">
             <h2>Node async stack traces</h2>
 
-            <p>Content</p>
+            <p>When in Node, you can enable (in development, preferrably: performance penalty…) so-called <strong>long stack traces</strong> through specific modules.  npm has a few, the most popular apparently being <a target="_blank" href="https://github.com/mattinsler/longjohn">longjohn</a>.</p>
             <aside class="notes">00:15 -> 00:00</aside>
-<!--
-00:15 - Node async stack traces through libs (e.g. longjohn https://github.com/mattinsler/longjohn, superstack, trace)
- -->
           </section>
         </section> <!-- #debugging-async -->
 
@@ -631,6 +808,7 @@ var computationDone = false;
 				center: true,
 
         width: '95%',
+        height: '90%',
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
