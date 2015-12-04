@@ -86,82 +86,522 @@ var christophe = {
 				</section>
 
         <section data-state="theme-color-silver-green">
-					<section id="">
-						<h1>Title</h1>
-            <h3>Sub Title</h3>
+					<section id="callback-hell">
+            <h3>Your daily</h3>
+						<h1>Callback Hell</h1>
+            <h3>reminder</h3>
+            <aside class="notes">17:30 -> 15:00</aside>
 					</section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="cbhell-simple-example">
+            <h2>A simple example</h2>
 
-            <p>Content</p>
+            <pre><code class="javascript" data-trim data-noescape>
+function readPost(req, res) {
+  Post.findById(req.params.id<u>, function(err, post)</u> {
+    if (err) {
+      return handleError(err);
+    }
+
+    post.findRecentComments(<u>function(err, comments) {</u>
+      if (err) {
+        return handleError(err);
+      }
+
+      res.render('posts/show', { post: post, comments: comments, title: post.title });
+    });
+  });
+}
+            </code></pre>
+
+            <aside class="notes">17:29 -> 17:10</aside>
           </section>
-				</section> <!-- # -->
+
+          <section id="cbhell-involved-example">
+            <h2>A more involved example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+function normalizeSKUs(skus, <u>cb</u>) {
+  var <u>normalizations = {}, count, xhrs = []</u>;
+
+  function handleError(err) {
+    _(xhrs).invoke('abort');
+    <u>cb(err);</u>
+  }
+
+  function handleSKU(payload) {
+    normalizations[payload.from] = payload.to;
+    if (<u>++count &lt; xhrs.length</u>)
+      return;
+
+    <u>cb(null, normalizations);</u>
+  }
+
+  function normalizeFromServer(sku) {
+    xhrs.push($.ajax({
+      url:       '/api/v1/skus/normalize',
+      data:      { sku: sku },
+      <u>onSuccess: handleSKU</u>,
+      <u>onError:   handleError</u>
+    }));
+  }
+}
+            </code></pre>
+
+            <aside class="notes">17:10 -> 16:30</aside>
+          </section>
+
+          <section id="cbhell-whats-wrong">
+            <h2>What’s wrong?</h2>
+
+            <h4 class="breathe">Code doesn’t flow well</h4>
+            <p>
+              Mind / Code mapping is terrible.<br/>
+              <small>(mostly because no returned value / entity)</small>
+            </p>
+            <p>Error management is a friggin’ mess.</p>
+
+            <h4>Untrustworthy</h4>
+            <p>Will it even <strong>run</strong>?</p>
+            <p>Will it run <strong>either</strong> error or success callbacks, not <strong>both</strong>?</p>
+            <p>Will it run only <strong>once</strong>?</p>
+
+            <h4>No composability</h4>
+
+            <aside class="notes">
+              <p>16:30 -> 15:00</p>
+              <ol>
+                <li>16:30 -> 16:15 Flow</li>
+                <li>16:15 -> 16:05 Will it even run?</li>
+                <li>16:05 -> 15:50 Will it run either/or?</li>
+                <li>15:50 -> 15:35 Will it run only once?</li>
+                <li>15:35 -> 15:20 Twitter embed</li>
+                <li>15:20 -> 15:00 No composability</li>
+              </ol>
+            </aside>
+          </section>
+				</section> <!-- #callback-hell -->
 
         <section data-state="theme-color-blue-yellow">
-          <section id="">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+          <section id="asyncjs">
+            <h3>Staying with callbacks</h3>
+            <h1>Async.js</h1>
+            <aside class="notes">15:00 -> 13:00</aside>
           </section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="asyncjs-simple-example">
+            <h2>A simple example</h2>
 
-            <p>Content</p>
+            <pre><code class="javascript" data-trim data-noescape>
+<u>async.waterfall</u>(<u>[</u>
+  Store.getDefaultBundleId,
+  Bundle.findById,
+  function(bundle<u>, cb</u>) { bundle.getSKUs(<u>cb</u>); }
+<u>]</u>, function(err, results) {
+  if (err) {
+    return handleError(res, err);
+  }
+
+  res.render('bundle/skus', { bundle: bundle });
+});
+            </code></pre>
+
+            <aside class="notes">14:59 -> 14:30</aside>
           </section>
-        </section> <!-- # -->
 
+          <section id="asyncjs-involved-example">
+            <h2>A more involved example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+var computationDone = false;
+<u>async.whilst</u>(
+  function loopCheck() { return !computationDone; },
+  function loopBody(<u>cb</u>) {
+    $.getJSON('/api/v1/jobs/status/' + job.id), function(status) {
+      computationDone = 'done' === status;
+      <u>cb();</u>
+    }
+  },
+  function loopDone() {
+    <u>async.map</u>(
+      job.imageIds,
+      function mappingRequester(imageId, <u>cb</u>) {
+        $.getJSON('/api/v1/images/' + imageId, <u>cb</u>);
+      },
+      function mapDone(err, results) {
+        if (err) {
+          renderError(err);
+        } else {
+          renderCloudImages(results);
+        }
+      }
+    ); // map
+  }
+); // whilst
+            </code></pre>
+
+            <aside class="notes">14:30 -> 13:45</aside>
+          </section>
+
+          <section id="asyncjs-pros-and-solves">
+            <h2>Pros</h2>
+
+            <p>No <strong>extra concepts</strong></p>
+            <p>No <strong>abstraction penalty</strong> (performance or code cruft)</p>
+            <p><strong>Wide</strong> range of use cases</p>
+            <p><strong>Well-tested</strong>, well-maintained (h/t @caolan)</p>
+
+            <h4>Solves…</h4>
+
+            <p>…some of the <strong>code flow and composability issues</strong> we’ve seen.</p>
+            <p>But not all.  And none of the other issues.</p>
+
+            <aside class="notes">
+              <p>13:45 -> 13:00</p>
+              <ol>
+                <li>13:45 -> 13:15 : Pro's</li>
+                <li>13:15 -> 13:00 : Solves</li>
+              </ol>
+            </aside>
+          </section>
+        </section> <!-- #async-js -->
+
+<!-- RESUME/FIXME -->
 				<section data-state="theme-color-forest-yellow">
-          <section id="">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+          <section id="promises">
+            <h1>Promises</h1>
+            <h3>are cool, I swear.</h3>
+            <aside class="notes">13:00 -> 10:00</aside>
           </section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="promises-history">
+            <h2>Old-timers already</h2>
+
+            <p>FIXME</p>
+
+            <aside class="notes">
+              <p>13:00 -> 12:15</p>
+              <ol>
+                <li>13:00 -> 12:40 History</li>
+                <li>12:40 -> 12:30 Recent web APIs</li>
+                <li>12:30 -> 12:15 Tons of libs</li>
+              </ol>
+            </aside>
+<!--
+00:20 - Been there a long time, under various forms and names; came into JS in 2007 through Dojo.  2009 = Promises/A (CommonJS) by Kris Zyp, had issues and never panned out. 2012 = Promises/A+ (Brian Cavalier, Domenic Denicola et al.)
+00:10 - Many recent web APIs use promises (e.g. fetch, ServiceWorker…)
+00:15 - Tons of libs (Q, rsvp, bluebird…) + ES6/2015 native
+ -->
+          </section>
+
+          <section id="promises-simple-example">
+            <h2>A simple example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME
+            </code></pre>
+            <aside class="notes">12:15 -> 11:45</aside>
+          </section>
+
+          <section id="promises-involved-example">
+            <h2>A more involved example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME More involved example (chained + composable + throw)
+            </code></pre>
+            <aside class="notes">11:45 -> 11:00</aside>
+          </section>
+
+          <section id="promises-links">
+            <h2>A couple great resources</h2>
 
             <p>Content</p>
+            <aside class="notes">11:00 -> 10:50</aside>
+<!-- Link to HTML5Rocks article + http://bevacqua.github.io/promisees/ (h/t to @bevacqua) -->
           </section>
-        </section> <!-- # -->
+
+          <section id="promises-pros-and-cons">
+            <h2>Pro’s and Con’s</h2>
+
+            <p>Content</p>
+            <aside class="notes">10:50 -> 10:00</aside>
+<!--
+  00:20 - Solves: trustworthiness + composability
+  00:30 - Con's: new abstractions, (ever so) slight perf penalty, code flow still not intuitive / sync-like
+ -->
+          </section>
+        </section> <!-- #promises -->
 
         <section data-state="theme-color-asphalt-orange">
-          <section id="">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+          <section id="generators">
+            <h1>Generators</h1>
+            <h3>Lazy little critters</h3>
+            <aside class="notes">10:00 -> 06:45</aside>
           </section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="gens-laziness">
+            <h2>Sheer Laziness</h2>
 
             <p>Content</p>
+            <aside class="notes">
+              <p>10:00 -> 09:00</p>
+              <ol>
+                <li>10:00 -> 09:30 Basically, JS lazy eval</li>
+                <li>09:30 -> 09:10 Coroutines</li>
+                <li>09:10 -> 09:00 Iterators</li>
+              </ol>
+            </aside>
+<!--
+00:30 - Basically, JS lazy evaluation
+00:20 - Lets us implement coroutines, basically: ad hoc suspending of the current code path (incl. stack), to be resumed later
+00:10 - Builds upon a more general concept: iterators
+ -->
           </section>
-				</section> <!-- # -->
+
+          <section id="gens-functions-and-yield">
+            <h2>Building blocks</h2>
+
+            <p>Content</p>
+            <aside class="notes">
+              <p>09:00 -> 08:05</p>
+              <ol>
+                <li>09:00 -> 08:40 Special functions</li>
+                <li>08:40 -> 08:05 yield + API</li>
+              </ol>
+            </aside>
+<!--
+00:20 - Special functions: calling them spawns (generates) an iterator+iterable
+00:35 - yield keyword + generator object API = conversation
+ -->
+          </section>
+
+          <section id="gens-example">
+            <h2>Your run-of-the-mill example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME infinite sequence examples (fibo, prime?)
+            </code></pre>
+            <p>Content</p>
+            <aside class="notes">08:05 -> 07:35</aside>
+          </section>
+
+          <section id="gens-composability">
+            <h2>Composability / Delegatability</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME infinite sequence examples (fibo, prime?)
+            </code></pre>
+            <p>Content</p>
+            <aside class="notes">07:35 -> 07:05</aside>
+          </section>
+
+          <section id="gens-sync-but">
+            <h2>But… async?</h2>
+
+            <p>Content</p>
+            <aside class="notes">07:05 -> 06:45</aside>
+<!--
+  00:20 - Don't bring a solution to async by themselves: gens are sync. But…
+ -->
+          </section>
+				</section> <!-- #generators -->
 
         <section data-state="theme-color-mint-beige">
-          <section id="">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+          <section id="promises-with-generators">
+            <h1>Promises + Generators</h1>
+            <h3>Or: I grokked this thing for real!</h3>
+            <aside class="notes">06:45 -> 04:30</aside>
           </section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="promises-with-gens-ground-work">
+            <h2>Underpinnings</h2>
 
             <p>Content</p>
+            <aside class="notes">
+              <p>06:45 -> 06:10</p>
+              <ol>
+                <li>06:45 -> 06:35 Forbes' name for it</li>
+                <li>06:35 -> 06:20 Conversation -> wire a runner</li>
+                <li>06:20 -> 06:10 Task.js</li>
+              </ol>
+            </aside>
+<!--
+00:10 - What Forbes cheekily described at JSConf.EU 2013 as “Control-Flow Utopia”
+00:15 - Because gens allow a conversation of values, function returns and thrown exceptions, it's possible to wire a special generator driver function that lets us write sync-looking async code
+00:10 - First occurrence believed to be Task.js (2011) by Dave "Little Calculist" Herman.
+ -->
           </section>
-        </section> <!-- # -->
+
+          <section id="promises-with-gens-example-user-side">
+            <h2>Classic example (user side)</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME
+            </code></pre>
+            <aside class="notes">06:10 -> 05:40</aside>
+          </section>
+
+          <section id="promises-with-gens-example-runner-side">
+            <h2>Classic example (runner side)</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME
+            </code></pre>
+            <aside class="notes">05:40 -> 05:00</aside>
+          </section>
+
+          <section id="promises-with-gens-pros-and-cons">
+            <h2>Pro’s and Con’s</h2>
+
+            <p>Content</p>
+            <aside class="notes">
+              <p>05:00 -> 04:30</p>
+              <ol>
+                <li>05:00 -> 04:45 Pro’s</li>
+                <li>04:45 -> 04:30 Con’s</li>
+              </ol>
+            </aside>
+<!--
+00:15 - Pro's: have your cake and eat it too
+00:15 - Cons: a bit hackish; added weight (syntax/perf) due to gens + promises on top of native semantics.
+ -->
+          </section>
+        </section> <!-- #promises-with-generators -->
 
         <section data-state="theme-color-blue-yellow">
-          <section id="">
-            <h1>Title</h1>
-            <h3>Sub Title</h3>
+          <section id="async-await">
+            <h1><code>async</code> / <code>await</code></h1>
+            <h3>ZOMG.</h3>
+            <aside class="notes">04:30 -> 03:15</aside>
           </section>
 
-          <section id="">
-            <h2>Title</h2>
+          <section id="async-await-intro">
+            <h2>Nailed it.</h2>
 
             <p>Content</p>
+            <aside class="notes">04:30 -> 04:20</aside>
+<!--
+  00:05 - Sort of the Holy Grail of JS async.
+  00:05 - Basically copy-pasted from C# 5.0 / .NET 4.5 (2012).
+ -->
           </section>
-        </section> <!-- # -->
+
+          <section id="async-await-example">
+            <h2>Classic example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME. Note how it's search-and-replace on gen+promise
+            </code></pre>
+            <aside class="notes">04:20 -> 03:50</aside>
+          </section>
+
+          <section id="async-await-pros-and-cons">
+            <h2>Pro’s and Con’s</h2>
+
+            <p>Content</p>
+            <aside class="notes">03:50 -> 03:35</aside>
+<!--
+  00:05 - Pro's: just about everything
+  00:10 - Con's: like promises/gens: perf not optimal yet, but getting there.
+ -->
+          </section>
+
+          <section id="async-await-status">
+            <h2>DO WANT!</h2>
+
+            <p>Content</p>
+            <aside class="notes">03:35 -> 03:15</aside>
+<!--
+  00:20 - ES Stage 3 ("Candidate") Draft.  Perhaps even Stage 4 by now?  Almost certainly in ES7/2016.  In Babel/Traceur for now, plus Edge (behind flags).  Don't see ITS yet in V8/Fx.  But hey, Babel FTW!
+ -->
+          </section>
+        </section> <!-- #async-await -->
+
+        <section data-state="theme-color-forest-yellow">
+          <section id="reactive-programming">
+            <h1>Title</h1>
+            <h3>Sub Title</h3>
+            <aside class="notes">03:15 -> 01:15</aside>
+          </section>
+
+          <section id="frp-intro">
+            <h2>Following the events lately?</h2>
+
+            <p>Content</p>
+            <aside class="notes">
+              <p>03:15 -> 02:15</p>
+              <ol>
+                <li>03:15 -> 03:05 was all once</li>
+                <li>03:05 -> 02:50 Streams?</li>
+                <li>02:50 -> 02:45 Not promises…</li>
+                <li>02:45 -> 02:15 RP/FRP</li>
+              </ol>
+            </aside>
+<!--
+00:10 - So far every async op was for getting a value **once**
+00:15 - What of multiple values over time?  What of **streams**, especially **event streams**?
+00:05 - Promises won't cut it: by definition, they resolve **once**.
+00:30 - That's what Reactive Programming is for.  Also, FRP (RP using FP blocks such as map, reduce, filter…)
+ -->
+          </section>
+
+          <section id="frp-example">
+            <h2>Classic example</h2>
+
+            <pre><code class="javascript" data-trim data-noescape>
+// FIXME: chained event filtering / throttling / take…
+            </code></pre>
+            <aside class="notes">02:15 -> 01:45</aside>
+          </section>
+
+          <section id="frp-links">
+            <h2>Check these out!</h2>
+
+            <p>Content</p>
+            <aside class="notes">01:45 -> 01:15</aside>
+<!--
+00:30 - Links to RxJS (and how it's borderline universal), BaconJS, RxMarbles, RxVision and https://gist.github.com/staltz/868e7e9bc2a7b8c1f754 (Andre Staltz)
+ -->
+          </section>
+        </section> <!-- #reactive-programming -->
+
+        <section data-state="theme-color-asphalt-orange">
+          <section id="debugging-async">
+            <h3>A word about</h3>
+            <h1>Debugging Async</h1>
+            <aside class="notes">01:15 -> 00:00</aside>
+          </section>
+
+          <section id="debugging-reminders">
+            <h2>Quick reminders</h2>
+
+            <p>Content</p>
+            <aside class="notes">01:15 -> 01:00</aside>
+<!--
+ 00:15 - Reminder: event loop, single thread, empty call stack
+-->
+          </section>
+
+          <section id="debugging-async-devtools">
+            <h2>Async call stacks in DevTools</h2>
+
+            <p>Content</p>
+            <aside class="notes">01:00 -> 00:15</aside>
+<!--
+00:45 - Async call stacks in DevTools (hence v8) (lien HTML5Rocks)
+ -->
+          </section>
+
+          <section id="debugging-v8-async-stack-traces">
+            <h2>Node async stack traces</h2>
+
+            <p>Content</p>
+            <aside class="notes">00:15 -> 00:00</aside>
+<!--
+00:15 - Node async stack traces through libs (e.g. longjohn https://github.com/mattinsler/longjohn, superstack, trace)
+ -->
+          </section>
+        </section> <!-- #debugging-async -->
 
 				<section>
 					<h1>Thank you!</h1>
@@ -190,7 +630,7 @@ var christophe = {
 				history: true,
 				center: true,
 
-        width: 980,
+        width: '95%',
 
 				theme: Reveal.getQueryHash().theme, // available themes are in /css/theme
 				transition: Reveal.getQueryHash().transition || 'linear', // default/cube/page/concave/zoom/linear/fade/none
